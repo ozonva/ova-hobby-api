@@ -1,18 +1,19 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 )
 
 // SliceIntsIntoBatches slices a target slice into a slice of slices with the demanded size
 func SliceIntsIntoBatches(target []int, batchSize int) ([][]int, error) {
 	if target == nil {
-		return nil, fmt.Errorf("target slice is not initialized")
+		return nil, errors.New("target slice is not initialized")
 	}
 	targetLen := len(target)
 
 	if targetLen < 1 {
-		return nil, fmt.Errorf("target slice must contain at least 1 element, yours has %v", batchSize)
+		return nil, errors.New("target slice must contain at least 1 element, yours has 0")
 	}
 	if batchSize < 1 {
 		return nil, fmt.Errorf("batchSize cannot be less than 1, you put %v", batchSize)
@@ -23,20 +24,17 @@ func SliceIntsIntoBatches(target []int, batchSize int) ([][]int, error) {
 		)
 	}
 
-	maxSize := targetLen / batchSize
-	if targetLen%batchSize != 0 {
-		maxSize += 1
-	}
+	batchedCapacity := (len(target) + batchSize - 1) / batchSize
+	batchedSlice := make([][]int, 0, batchedCapacity)
 
-	newSlice := make([][]int, 0, maxSize)
 	for currentIndex := 0; currentIndex < targetLen; currentIndex += batchSize {
 		if currentIndex+batchSize > targetLen-1 {
-			newSlice = append(newSlice, target[currentIndex:])
-			return newSlice, nil
+			batchedSlice = append(batchedSlice, target[currentIndex:])
+			return batchedSlice, nil
 		}
-		newSlice = append(newSlice, target[currentIndex:currentIndex+batchSize])
+		batchedSlice = append(batchedSlice, target[currentIndex:currentIndex+batchSize])
 	}
-	return newSlice, nil
+	return batchedSlice, nil
 }
 
 // SwapKeysValues swaps keys with values in a map, error if there are multiple the same values
@@ -69,7 +67,11 @@ func convertSliceToMap(slice []int) map[int]struct{} {
 // FilterSliceInts filters a slice against values of an another slice and returns a new slice
 func FilterSliceInts(target []int, filterSlice []int) ([]int, error) {
 	if target == nil {
-		return nil, fmt.Errorf("target slice is not initialized")
+		return nil, errors.New("target slice is not initialized")
+	}
+
+	if filterSlice == nil {
+		return nil, errors.New("filterSlice is not initialized")
 	}
 
 	stopValuesSet := convertSliceToMap(filterSlice)
