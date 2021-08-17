@@ -1,7 +1,27 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+	"time"
+)
 
 func main() {
-	fmt.Println("This is the ova-hobby-api package")
+
+	// example of working with files in an infinite loop
+	for {
+		file, err := os.Open("./README.md")
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		func(f *os.File) {
+			defer file.Close()
+			// some actions with the file can be placed here
+		}(file)
+		fmt.Println(file.Close())
+		time.Sleep(time.Second * 1)
+	}
 }

@@ -3,7 +3,59 @@ package utils
 import (
 	"errors"
 	"fmt"
+
+	"github.com/ozonva/ova-hobby-api/pkg/hobby"
+
+	"github.com/google/uuid"
 )
+
+// HobbiesToMap creates a map with a UUID key and a Hobby as a value
+func HobbiesToMap(hobbies []hobby.Hobby) (map[uuid.UUID]hobby.Hobby, error) {
+	if hobbies == nil {
+		return nil, errors.New("hobbies slice is not initialized")
+	}
+	mapHobbies := make(map[uuid.UUID]hobby.Hobby)
+
+	for _, hobby := range hobbies {
+		if _, ok := mapHobbies[hobby.ID]; ok {
+			return nil, fmt.Errorf("more than one key {%s} in the resulting map", hobby.ID)
+		}
+		mapHobbies[hobby.ID] = hobby
+	}
+	return mapHobbies, nil
+}
+
+// SliceHobbiesIntoBatches slices a target slice into a slice of slices with the demanded size
+func SliceHobbiesIntoBatches(target []hobby.Hobby, batchSize int) ([][]hobby.Hobby, error) {
+	if target == nil {
+		return nil, errors.New("target slice is not initialized")
+	}
+	targetLen := len(target)
+
+	if targetLen < 1 {
+		return nil, errors.New("target slice must contain at least 1 element, yours has 0")
+	}
+	if batchSize < 1 {
+		return nil, fmt.Errorf("batchSize cannot be less than 1, you put %v", batchSize)
+	}
+	if batchSize > targetLen {
+		return nil, fmt.Errorf(
+			"batchSize cannot exceed the len of target, you put %v - length of the slice is %v", batchSize, targetLen,
+		)
+	}
+
+	batchedCapacity := (len(target) + batchSize - 1) / batchSize
+	batchedSlice := make([][]hobby.Hobby, 0, batchedCapacity)
+
+	for currentIndex := 0; currentIndex < targetLen; currentIndex += batchSize {
+		if currentIndex+batchSize > targetLen-1 {
+			batchedSlice = append(batchedSlice, target[currentIndex:])
+			return batchedSlice, nil
+		}
+		batchedSlice = append(batchedSlice, target[currentIndex:currentIndex+batchSize])
+	}
+	return batchedSlice, nil
+}
 
 // SliceIntsIntoBatches slices a target slice into a slice of slices with the demanded size
 func SliceIntsIntoBatches(target []int, batchSize int) ([][]int, error) {
@@ -54,12 +106,10 @@ func SwapKeysValues(target map[string]int) (map[int]string, error) {
 	return output, nil
 }
 
-var emptyValue struct{}
-
 func convertSliceToMap(slice []int) map[int]struct{} {
 	stopValuesSet := make(map[int]struct{}, len(slice))
 	for _, stopValue := range slice {
-		stopValuesSet[stopValue] = emptyValue
+		stopValuesSet[stopValue] = struct{}{}
 	}
 	return stopValuesSet
 }
