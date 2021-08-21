@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	// example of working with files in an infinite loop
 	for {
 		file, err := os.Open("./README.md")
@@ -17,10 +16,10 @@ func main() {
 			return
 		}
 
-		func(f *os.File) {
+		func() {
 			defer file.Close()
 			// some actions with the file can be placed here
-		}(file)
+		}()
 		fmt.Println(file.Close())
 		time.Sleep(time.Second * 1)
 	}
