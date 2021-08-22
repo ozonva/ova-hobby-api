@@ -1,10 +1,11 @@
-package utils
+package utils_test
 
 import (
 	"fmt"
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/ozonva/ova-hobby-api/internal/utils"
 	"github.com/ozonva/ova-hobby-api/pkg/models"
 	"github.com/stretchr/testify/require"
 )
@@ -33,7 +34,7 @@ func TestHobbiesToMap(t *testing.T) {
 		testName := fmt.Sprintf("%v --> %v", testCase.inputSlice, testCase.expected)
 
 		t.Run(testName, func(t *testing.T) {
-			actual, err := HobbiesToMap(testCase.inputSlice)
+			actual, err := utils.HobbiesToMap(testCase.inputSlice)
 
 			if testCase.expectedErrMessage != "" {
 				require.EqualError(t, err, testCase.expectedErrMessage)
@@ -72,7 +73,7 @@ func TestSliceHobbiesIntoBatches(t *testing.T) {
 		testName := fmt.Sprintf("%v,%v --> %v", testCase.inputSlice, testCase.inputBatchSize, testCase.expected)
 
 		t.Run(testName, func(t *testing.T) {
-			actual, err := SliceHobbiesIntoBatches(testCase.inputSlice, testCase.inputBatchSize)
+			actual, err := utils.SliceHobbiesIntoBatches(testCase.inputSlice, testCase.inputBatchSize)
 
 			if testCase.expectedErrMessage != "" {
 				require.EqualError(t, err, testCase.expectedErrMessage)
@@ -105,7 +106,7 @@ func TestSliceIntsIntoBatches(t *testing.T) {
 		testName := fmt.Sprintf("%d,%d --> %d", testCase.inputSlice, testCase.inputBatchSize, testCase.expected)
 
 		t.Run(testName, func(t *testing.T) {
-			actual, err := SliceIntsIntoBatches(testCase.inputSlice, testCase.inputBatchSize)
+			actual, err := utils.SliceIntsIntoBatches(testCase.inputSlice, testCase.inputBatchSize)
 
 			if testCase.expectedErrMessage != "" {
 				require.EqualError(t, err, testCase.expectedErrMessage)
@@ -132,7 +133,7 @@ func TestSwapKeysValues(t *testing.T) {
 		testName := fmt.Sprintf("%v --> %v", testCase.inputMap, testCase.expected)
 
 		t.Run(testName, func(t *testing.T) {
-			actual, err := SwapKeysValues(testCase.inputMap)
+			actual, err := utils.SwapKeysValues(testCase.inputMap)
 
 			if testCase.expectedErrMessage != "" {
 				require.EqualError(t, err, testCase.expectedErrMessage)
@@ -163,7 +164,7 @@ func TestFilterSliceInts(t *testing.T) {
 		testName := fmt.Sprintf("%d,%d --> %d", testCase.inputSlice, testCase.inputFilterSlice, testCase.expected)
 
 		t.Run(testName, func(t *testing.T) {
-			actual, err := FilterSliceInts(testCase.inputSlice, testCase.inputFilterSlice)
+			actual, err := utils.FilterSliceInts(testCase.inputSlice, testCase.inputFilterSlice)
 
 			if testCase.expectedErrMessage != "" {
 				require.EqualError(t, err, testCase.expectedErrMessage)
