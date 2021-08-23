@@ -1,39 +1,40 @@
-package utils
+package utils_test
 
 import (
 	"fmt"
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/ozonva/ova-hobby-api/pkg/hobby"
+	"github.com/ozonva/ova-hobby-api/internal/utils"
+	"github.com/ozonva/ova-hobby-api/pkg/models"
 	"github.com/stretchr/testify/require"
 )
 
 func TestHobbiesToMap(t *testing.T) {
-	h1 := hobby.NewHobby("SUP", 0, hobby.Sports)
-	h2 := hobby.NewHobby("Collecting stamps", 1, hobby.Collecting)
+	h1 := models.NewHobby("SUP", 0, models.Sports)
+	h2 := models.NewHobby("Collecting stamps", 1, models.Collecting)
 
 	h3 := h2
 	h3.ID = h1.ID
 
 	tests := []struct {
-		inputSlice         []hobby.Hobby
-		expected           map[uuid.UUID]hobby.Hobby
+		inputSlice         []models.Hobby
+		expected           map[uuid.UUID]models.Hobby
 		expectedErrMessage string
 	}{
-		{[]hobby.Hobby{}, map[uuid.UUID]hobby.Hobby{}, ""},
-		{[]hobby.Hobby{h1}, map[uuid.UUID]hobby.Hobby{h1.ID: h1}, ""},
-		{[]hobby.Hobby{h1, h2}, map[uuid.UUID]hobby.Hobby{h1.ID: h1, h2.ID: h2}, ""},
+		{[]models.Hobby{}, map[uuid.UUID]models.Hobby{}, ""},
+		{[]models.Hobby{h1}, map[uuid.UUID]models.Hobby{h1.ID: h1}, ""},
+		{[]models.Hobby{h1, h2}, map[uuid.UUID]models.Hobby{h1.ID: h1, h2.ID: h2}, ""},
 
 		{nil, nil, "hobbies slice is not initialized"},
-		{[]hobby.Hobby{h1, h3}, nil, fmt.Sprintf("more than one key {%s} in the resulting map", h1.ID)},
+		{[]models.Hobby{h1, h3}, nil, fmt.Sprintf("more than one key {%s} in the resulting map", h1.ID)},
 	}
 
 	for _, testCase := range tests {
 		testName := fmt.Sprintf("%v --> %v", testCase.inputSlice, testCase.expected)
 
 		t.Run(testName, func(t *testing.T) {
-			actual, err := HobbiesToMap(testCase.inputSlice)
+			actual, err := utils.HobbiesToMap(testCase.inputSlice)
 
 			if testCase.expectedErrMessage != "" {
 				require.EqualError(t, err, testCase.expectedErrMessage)
@@ -44,35 +45,35 @@ func TestHobbiesToMap(t *testing.T) {
 }
 
 func TestSliceHobbiesIntoBatches(t *testing.T) {
-	h1 := hobby.NewHobby("SUP", 0, hobby.Sports)
-	h2 := hobby.NewHobby("Collecting stamps", 1, hobby.Collecting)
-	h3 := hobby.NewHobby("Cooking", 612, hobby.Domestic)
-	h4 := hobby.NewHobby("Hikking", 98643, hobby.Outdoors)
+	h1 := models.NewHobby("SUP", 0, models.Sports)
+	h2 := models.NewHobby("Collecting stamps", 1, models.Collecting)
+	h3 := models.NewHobby("Cooking", 612, models.Domestic)
+	h4 := models.NewHobby("Hikking", 98643, models.Outdoors)
 
 	tests := []struct {
-		inputSlice         []hobby.Hobby
+		inputSlice         []models.Hobby
 		inputBatchSize     int
-		expected           [][]hobby.Hobby
+		expected           [][]models.Hobby
 		expectedErrMessage string
 	}{
-		{[]hobby.Hobby{h1}, 1, [][]hobby.Hobby{{h1}}, ""},
-		{[]hobby.Hobby{h1, h2}, 1, [][]hobby.Hobby{{h1}, {h2}}, ""},
-		{[]hobby.Hobby{h1, h2}, 2, [][]hobby.Hobby{{h1, h2}}, ""},
-		{[]hobby.Hobby{h1, h2, h3, h4}, 2, [][]hobby.Hobby{{h1, h2}, {h3, h4}}, ""},
-		{[]hobby.Hobby{h1, h2, h3, h4}, 3, [][]hobby.Hobby{{h1, h2, h3}, {h4}}, ""},
+		{[]models.Hobby{h1}, 1, [][]models.Hobby{{h1}}, ""},
+		{[]models.Hobby{h1, h2}, 1, [][]models.Hobby{{h1}, {h2}}, ""},
+		{[]models.Hobby{h1, h2}, 2, [][]models.Hobby{{h1, h2}}, ""},
+		{[]models.Hobby{h1, h2, h3, h4}, 2, [][]models.Hobby{{h1, h2}, {h3, h4}}, ""},
+		{[]models.Hobby{h1, h2, h3, h4}, 3, [][]models.Hobby{{h1, h2, h3}, {h4}}, ""},
 
 		{nil, 1, nil, "target slice is not initialized"},
-		{[]hobby.Hobby{}, 1, nil, "target slice must contain at least 1 element, yours has 0"},
-		{[]hobby.Hobby{{}}, 2, nil, "batchSize cannot exceed the len of target, you put 2 - length of the slice is 1"},
-		{[]hobby.Hobby{{}}, 0, nil, "batchSize cannot be less than 1, you put 0"},
-		{[]hobby.Hobby{{}}, -5, nil, "batchSize cannot be less than 1, you put -5"},
+		{[]models.Hobby{}, 1, nil, "target slice must contain at least 1 element, yours has 0"},
+		{[]models.Hobby{{}}, 2, nil, "batchSize cannot exceed the len of target, you put 2 - length of the slice is 1"},
+		{[]models.Hobby{{}}, 0, nil, "batchSize cannot be less than 1, you put 0"},
+		{[]models.Hobby{{}}, -5, nil, "batchSize cannot be less than 1, you put -5"},
 	}
 
 	for _, testCase := range tests {
 		testName := fmt.Sprintf("%v,%v --> %v", testCase.inputSlice, testCase.inputBatchSize, testCase.expected)
 
 		t.Run(testName, func(t *testing.T) {
-			actual, err := SliceHobbiesIntoBatches(testCase.inputSlice, testCase.inputBatchSize)
+			actual, err := utils.SliceHobbiesIntoBatches(testCase.inputSlice, testCase.inputBatchSize)
 
 			if testCase.expectedErrMessage != "" {
 				require.EqualError(t, err, testCase.expectedErrMessage)
@@ -105,7 +106,7 @@ func TestSliceIntsIntoBatches(t *testing.T) {
 		testName := fmt.Sprintf("%d,%d --> %d", testCase.inputSlice, testCase.inputBatchSize, testCase.expected)
 
 		t.Run(testName, func(t *testing.T) {
-			actual, err := SliceIntsIntoBatches(testCase.inputSlice, testCase.inputBatchSize)
+			actual, err := utils.SliceIntsIntoBatches(testCase.inputSlice, testCase.inputBatchSize)
 
 			if testCase.expectedErrMessage != "" {
 				require.EqualError(t, err, testCase.expectedErrMessage)
@@ -132,7 +133,7 @@ func TestSwapKeysValues(t *testing.T) {
 		testName := fmt.Sprintf("%v --> %v", testCase.inputMap, testCase.expected)
 
 		t.Run(testName, func(t *testing.T) {
-			actual, err := SwapKeysValues(testCase.inputMap)
+			actual, err := utils.SwapKeysValues(testCase.inputMap)
 
 			if testCase.expectedErrMessage != "" {
 				require.EqualError(t, err, testCase.expectedErrMessage)
@@ -163,7 +164,7 @@ func TestFilterSliceInts(t *testing.T) {
 		testName := fmt.Sprintf("%d,%d --> %d", testCase.inputSlice, testCase.inputFilterSlice, testCase.expected)
 
 		t.Run(testName, func(t *testing.T) {
-			actual, err := FilterSliceInts(testCase.inputSlice, testCase.inputFilterSlice)
+			actual, err := utils.FilterSliceInts(testCase.inputSlice, testCase.inputFilterSlice)
 
 			if testCase.expectedErrMessage != "" {
 				require.EqualError(t, err, testCase.expectedErrMessage)

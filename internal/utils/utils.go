@@ -4,17 +4,17 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ozonva/ova-hobby-api/pkg/hobby"
+	"github.com/ozonva/ova-hobby-api/pkg/models"
 
 	"github.com/google/uuid"
 )
 
 // HobbiesToMap creates a map with a UUID key and a Hobby as a value
-func HobbiesToMap(hobbies []hobby.Hobby) (map[uuid.UUID]hobby.Hobby, error) {
+func HobbiesToMap(hobbies []models.Hobby) (map[uuid.UUID]models.Hobby, error) {
 	if hobbies == nil {
 		return nil, errors.New("hobbies slice is not initialized")
 	}
-	mapHobbies := make(map[uuid.UUID]hobby.Hobby)
+	mapHobbies := make(map[uuid.UUID]models.Hobby)
 
 	for _, hobby := range hobbies {
 		if _, ok := mapHobbies[hobby.ID]; ok {
@@ -26,7 +26,7 @@ func HobbiesToMap(hobbies []hobby.Hobby) (map[uuid.UUID]hobby.Hobby, error) {
 }
 
 // SliceHobbiesIntoBatches slices a target slice into a slice of slices with the demanded size
-func SliceHobbiesIntoBatches(target []hobby.Hobby, batchSize int) ([][]hobby.Hobby, error) {
+func SliceHobbiesIntoBatches(target []models.Hobby, batchSize int) ([][]models.Hobby, error) {
 	if target == nil {
 		return nil, errors.New("target slice is not initialized")
 	}
@@ -45,7 +45,7 @@ func SliceHobbiesIntoBatches(target []hobby.Hobby, batchSize int) ([][]hobby.Hob
 	}
 
 	batchedCapacity := (len(target) + batchSize - 1) / batchSize
-	batchedSlice := make([][]hobby.Hobby, 0, batchedCapacity)
+	batchedSlice := make([][]models.Hobby, 0, batchedCapacity)
 
 	for currentIndex := 0; currentIndex < targetLen; currentIndex += batchSize {
 		if currentIndex+batchSize > targetLen-1 {
