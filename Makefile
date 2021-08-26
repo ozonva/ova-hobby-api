@@ -17,19 +17,23 @@ run:
 
 ## test: Test the project
 test:
-	go test ./...
+	go test -race ./...
 
-## lint: Run formatting and code checks
-lint:
+## check: Run formatting and code checks
+check:
 	go fmt ./...
-	golint ./...
+	staticcheck ./...
 
 ## build: Build a binary
 build:
 	go build -o $(GOBIN)$(BINARY_MAC_NAME) $(GOMAIN)
 
+## generate: Generate everything
+generate:
+	go generate ./...
+
 ## all: Code checks and run
-all: lint run
+all: check run
 
 ## help: Show help
 help: Makefile
