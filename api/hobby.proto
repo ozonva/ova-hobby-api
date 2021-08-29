@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package ova.hobby.api;
+
+option go_package = "github.com/ozonva/ova-hobby-api/pkg/ova-hobby-api;ova_hobby_api";
+
+service HobbyAPI {
+  rpc CreateHobby (CreateRequest) returns (HobbyReply) {}
+  rpc DescribeHobby (DescribeRequest) returns (HobbyReply) {}
+  rpc ListHobby (ListRequest) returns (ListReply) {}
+  rpc RemoveHobby (RemoveRequest) returns (google.protobuf.Empty) {}
+}
+
+enum HobbyKind {
+  _ = 0;
+  ENRICHMENT = 1;
+  SPORTS = 2;
+  SOCIAL = 3;
+  CREATIVE = 4;
+  COLLECTING = 5;
+  OUTDOORS = 6;
+  DOMESTIC = 7;
+  UNCATEGORISED = 8;
+}
+
+message CreateRequest {
+  string name = 1;
+  uint64 user_id = 2;
+  HobbyKind hobby_kind = 3;
+}
+
+message DescribeRequest {
+  string uuid = 1;
+  string name = 2;
+  uint64 user_id = 3;
+  HobbyKind hobby_kind = 4;
+}
+
+message HobbyReply {
+  string uuid = 1;
+  string name = 2;
+  uint64 user_id = 3;
+  HobbyKind hobby_kind = 4;
+}
+
+message ListReply {
+  repeated HobbyReply members = 1;
+}
+
+message RemoveRequest {
+  string uuid = 1;
+}
+
+message ListRequest {
+  uint32 offset = 1;
+  uint32 limit = 2;
+}

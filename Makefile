@@ -35,6 +35,28 @@ generate:
 ## all: Code checks and run
 all: check run
 
+.PHONY: deps
+deps: .install-go-deps
+
+.PHONY: .install-go-deps
+.install-go-deps:
+	ls go.mod || go mod init github.com/ozonva/ova-hobby-api
+	go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+	go get -u github.com/golang/protobuf/proto
+	go get -u github.com/golang/protobuf/protoc-gen-go
+	go get -u google.golang.org/grpc
+	go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
+	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+	go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+
+
+.PHONY: proto
+proto:
+	protoc -I api/ \
+			--go_out=pkg/ --go_opt=paths=import \
+			--go-grpc_out=pkg/ --go-grpc_opt=paths=import \
+			api/hobby.proto
+
 ## help: Show help
 help: Makefile
 	@echo
