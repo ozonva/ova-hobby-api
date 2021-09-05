@@ -39,10 +39,10 @@ const (
 
 // Hobby represents a single hobby
 type Hobby struct {
-	ID     uuid.UUID
-	UserID uint64
-	Name   string
-	Kind   HobbyKind
+	ID     uuid.UUID `db:"id"`
+	UserID uint64    `db:"user_id"`
+	Name   string    `db:"name"`
+	Kind   HobbyKind `db:"kind"`
 }
 
 // NewHobby is a constructor for Hobby
