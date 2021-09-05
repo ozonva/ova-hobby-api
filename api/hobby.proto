@@ -13,36 +13,21 @@ service HobbyAPI {
   rpc RemoveHobby (RemoveRequest) returns (google.protobuf.Empty) {}
 }
 
-enum HobbyKind {
-  _ = 0;
-  ENRICHMENT = 1;
-  SPORTS = 2;
-  SOCIAL = 3;
-  CREATIVE = 4;
-  COLLECTING = 5;
-  OUTDOORS = 6;
-  DOMESTIC = 7;
-  UNCATEGORISED = 8;
-}
-
 message CreateRequest {
   string name = 1;
   uint64 user_id = 2;
-  HobbyKind hobby_kind = 3;
+  uint32 hobby_kind = 3;
 }
 
 message DescribeRequest {
   string uuid = 1;
-  string name = 2;
-  uint64 user_id = 3;
-  HobbyKind hobby_kind = 4;
 }
 
 message HobbyReply {
   string uuid = 1;
   string name = 2;
   uint64 user_id = 3;
-  HobbyKind hobby_kind = 4;
+  uint32 hobby_kind = 4;
 }
 
 message ListReply {

@@ -1,3 +1,5 @@
+include .env
+
 PROJECTNAME=$(shell basename "$(PWD)")
 
 # Go related variables.
@@ -9,11 +11,24 @@ GOMAIN=$(GOBASE)/cmd/ova-hobby-api/main.go
 # Make is verbose in Linux. Make it silent.
 MAKEFLAGS += --silent
 
-.PHONY: run, test, check, build, all, help
+.PHONY: run, test, check, build, all, help, up, down
+
+## migrate: Apply migrations to the DB
+migrate:
+	goose -dir ./migrations/ postgres "user=$(POSTGRES_USER) dbname=$(POSTGRES_DB) password=$(POSTGRES_PASSWORD) sslmode=disable" up
+
+
+## up: Run docker containers
+up:
+	docker compose up --build -d
+
+## down: Stop and remove docker containers
+down:
+	docker compose down --remove-orphans
 
 ## run: Run a main.go
-run: 
-	go run $(GOMAIN)
+run:
+	source ./.env && go run $(GOMAIN)
 
 ## test: Test the project
 test:

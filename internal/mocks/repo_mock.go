@@ -8,6 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	uuid "github.com/google/uuid"
 	models "github.com/ozonva/ova-hobby-api/pkg/models"
 )
 
@@ -48,8 +49,22 @@ func (mr *MockRepoMockRecorder) AddHobbies(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddHobbies", reflect.TypeOf((*MockRepo)(nil).AddHobbies), arg0)
 }
 
+// AddHobby mocks base method.
+func (m *MockRepo) AddHobby(arg0 models.Hobby) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddHobby", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddHobby indicates an expected call of AddHobby.
+func (mr *MockRepoMockRecorder) AddHobby(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddHobby", reflect.TypeOf((*MockRepo)(nil).AddHobby), arg0)
+}
+
 // DescribeHobby mocks base method.
-func (m *MockRepo) DescribeHobby(arg0 uint64) (*models.Hobby, error) {
+func (m *MockRepo) DescribeHobby(arg0 uuid.UUID) (*models.Hobby, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeHobby", arg0)
 	ret0, _ := ret[0].(*models.Hobby)
@@ -76,4 +91,18 @@ func (m *MockRepo) ListHobbies(arg0, arg1 uint64) ([]models.Hobby, error) {
 func (mr *MockRepoMockRecorder) ListHobbies(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListHobbies", reflect.TypeOf((*MockRepo)(nil).ListHobbies), arg0, arg1)
+}
+
+// RemoveHobby mocks base method.
+func (m *MockRepo) RemoveHobby(arg0 uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemoveHobby", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RemoveHobby indicates an expected call of RemoveHobby.
+func (mr *MockRepoMockRecorder) RemoveHobby(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveHobby", reflect.TypeOf((*MockRepo)(nil).RemoveHobby), arg0)
 }
